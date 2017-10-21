@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/episcopal-lang.iml" filepath="$PROJECT_DIR$/.idea/modules/episcopal-lang.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/episcopal-lang_main.iml" filepath="$PROJECT_DIR$/.idea/modules/episcopal-lang_main.iml" group="episcopal-lang" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/episcopal-lang_test.iml" filepath="$PROJECT_DIR$/.idea/modules/episcopal-lang_test.iml" group="episcopal-lang" />
+    </modules>
+  </component>
+</project>
