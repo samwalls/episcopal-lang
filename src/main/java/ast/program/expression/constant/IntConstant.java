@@ -1,4 +1,15 @@
 package ast.program.expression.constant;
 
-public class IntConstant extends Constant {
+import ast.ASTVisitor;
+
+public class IntConstant extends Constant<Integer> {
+
+    public IntConstant(Integer value) {
+        super(value);
+    }
+
+    @Override
+    public void accept(ASTVisitor v) {
+        v.visit(this);
+    }
 }

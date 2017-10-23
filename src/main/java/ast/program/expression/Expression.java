@@ -1,4 +1,6 @@
 package ast.program.expression;
 
-public abstract class Expression {
+import ast.ASTHost;
+
+public abstract class Expression implements ASTHost {
 }

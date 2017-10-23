@@ -1,4 +1,15 @@
 package ast.program.expression.constant;
 
-public class FloatConstant extends Constant {
+import ast.ASTVisitor;
+
+public class FloatConstant extends Constant<Float> {
+
+    public FloatConstant(Float value) {
+        super(value);
+    }
+
+    @Override
+    public void accept(ASTVisitor v) {
+        v.visit(this);
+    }
 }
