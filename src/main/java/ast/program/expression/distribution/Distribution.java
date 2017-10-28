@@ -4,7 +4,7 @@ import ast.program.expression.Expression;
 
 public abstract class Distribution extends Expression {
 
-    protected Expression e;
+    public Expression e;
 
     public Distribution(Expression e) {
         this.e = e;

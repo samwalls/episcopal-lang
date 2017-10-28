@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Arguments implements ASTHost {
 
-    private List<Identifier> identifiers;
+    public List<Identifier> identifiers;
 
     public Arguments(List<Identifier> identifiers) {
         this.identifiers = identifiers;

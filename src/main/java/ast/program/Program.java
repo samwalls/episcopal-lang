@@ -7,9 +7,9 @@ import ast.program.expression.Identifier;
 
 public class Program implements ASTHost {
 
-    private Identifier id;
-    private Expression e;
-    private Query whereQuery;
+    public Identifier id;
+    public Expression e;
+    public Query whereQuery;
 
     public Program(Identifier id, Expression e, Query whereQuery) {
         this.id = id;

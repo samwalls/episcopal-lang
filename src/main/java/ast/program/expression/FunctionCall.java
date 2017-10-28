@@ -6,8 +6,8 @@ import java.util.List;
 
 public class FunctionCall extends Expression {
 
-    private Identifier id;
-    private List<Expression> argValues;
+    public Identifier id;
+    public List<Expression> argValues;
 
     public FunctionCall(Identifier id, List<Expression> argValues) {
         this.id = id;

@@ -4,11 +4,11 @@ import ast.ASTVisitor;
 
 public class Identifier extends Expression {
 
-    private String id;
+    public String value;
 
-    public Identifier(String id) {
-        // TODO restrict ID types?
-        this.id = id;
+    public Identifier(String value) {
+        // TODO restrict ID values with regex?
+        this.value = value;
     }
 
     @Override

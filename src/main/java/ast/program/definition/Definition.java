@@ -9,9 +9,9 @@ import java.util.List;
 
 public abstract class Definition implements ASTHost {
 
-    protected Identifier id;
-    protected Arguments args;
-    protected List<Expression> expressions;
+    public Identifier id;
+    public Arguments args;
+    public List<Expression> expressions;
 
     public Definition(Identifier id, Arguments args, List<Expression> expressions) {
         this.id = id;

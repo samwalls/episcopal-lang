@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Let extends Expression {
 
-    private List<Definition> definitions;
-    private Expression e;
+    public List<Definition> definitions;
+    public Expression e;
 
     public Let(List<Definition> definitions, Expression e) {
         this.definitions = definitions;

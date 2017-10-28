@@ -4,7 +4,7 @@ import ast.ASTVisitor;
 
 public class Observation extends Expression {
 
-    private Expression e1, e2;
+    public Expression e1, e2;
 
     public Observation(Expression e1, Expression e2) {
         this.e1 = e1;

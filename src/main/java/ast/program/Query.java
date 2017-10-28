@@ -9,9 +9,9 @@ import java.util.List;
 
 public class Query implements ASTHost {
 
-    private Identifier id;
-    private Arguments args;
-    private List<Expression> expressions;
+    public Identifier id;
+    public Arguments args;
+    public List<Expression> expressions;
 
     public Query(Identifier id, Arguments args, List<Expression> expressions) {
         this.id = id;

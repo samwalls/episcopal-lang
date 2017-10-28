@@ -4,7 +4,7 @@ import ast.program.expression.Expression;
 
 public abstract class Constant<T> extends Expression {
 
-    protected T value;
+    public T value;
 
     public Constant(T value) {
         this.value = value;
