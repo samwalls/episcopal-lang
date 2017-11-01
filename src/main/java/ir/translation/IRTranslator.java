@@ -30,10 +30,12 @@ import java.util.*;
  */
 public class IRTranslator implements ASTVisitor {
 
-    private EnvNode globalEnvironment;
-    private EnvNode currentEnvironment;
+    public static final String BUILTIN_FINISH = "builtin_finish";
 
-    private Map<EnvNode, Statement> methods;
+    private EnvNode<String> globalEnvironment;
+    private EnvNode<String> currentEnvironment;
+
+    private Map<String, Statement> methods;
 
     private Statement mainMethod;
 
@@ -43,7 +45,7 @@ public class IRTranslator implements ASTVisitor {
         return mainMethod;
     }
 
-    public Map<EnvNode, Statement> getMethods() {
+    public Map<String, Statement> getMethods() {
         return methods;
     }
 
@@ -51,44 +53,61 @@ public class IRTranslator implements ASTVisitor {
         return globalEnvironment;
     }
 
+    /**
+     * @param localLabel the name of the label relative to its environment
+     * @return a globally unique label for the given label, given the current environment
+     */
+    private String canonicalLabel(String localLabel) {
+        String label = localLabel;
+        for (EnvNode node = currentEnvironment; node != null; node = node.getParent()) {
+            label = node.value.toString() + "_" + label;
+        }
+        return label;
+    }
+
     //******** VISITOR DEFINITION ********//
 
     @Override
-    public Map<EnvNode, Statement> visit(Program program) throws Exception {
+    public Map<String, Statement> visit(Program program) throws Exception {
         globalEnvironment = new EnvNode<>(null);
         globalEnvironment.value = program.id.value;
         currentEnvironment = globalEnvironment;
         methods = new HashMap<>();
-        mainMethod = new EXP((ir.expression.Expression)program.expression.accept(this));
         for (Query q : program.queries)
             q.accept(this);
+        mainMethod = new EXP(new CALL(BUILTIN_FINISH, new ir.Arguments((ir.expression.Expression)program.expression.accept(this))));
         return methods;
     }
 
     @Override
-    public Object visit(Arguments arguments) throws IRTranslateException {
-        throw new IRTranslateException("");
+    public Object visit(Arguments arguments) throws Exception {
+        for (Identifier i : arguments.identifiers) {
+            if (!currentEnvironment.contains(i.value))
+                currentEnvironment.add(i.value, new EnvNode<>(i.value));
+        }
+        return null;
     }
 
     private EnvNode visitDefinition(Identifier id, Arguments args, List<Expression> expressions) throws Exception {
-        EnvNode parentEnvironment = currentEnvironment;
-        EnvNode newEnvironment = new EnvNode<>(id.value);
+        EnvNode<String> parentEnvironment = currentEnvironment;
+        EnvNode<String> newEnvironment = new EnvNode<>(id.value);
+        parentEnvironment.add(id.value, newEnvironment);
         // work on the new environment
         currentEnvironment = newEnvironment;
         // add the args to the environment
-        for (Identifier i : args.identifiers) {
-            currentEnvironment.add(i.value, null);
-        }
+        args.accept(this);
         // construct an SEQ from the definition expressions for this definition
         if (expressions.size() <= 0)
-            throw new IRTranslateException("declaration of environment " + newEnvironment.value.toString() + " has no body");
+            throw new IRTranslateException("declaration of environment " + newEnvironment.value + " has no body");
+        // this statement represents the definition in its entirety
+        Statement stmt;
         if (expressions.size() > 1) {
             SEQ root = new SEQ(null, null);
             SEQ parent = root;
             SEQ current = parent;
             for (int i = 0; i < expressions.size() - 1; i++) {
-                EXP exp = (EXP)expressions.get(i).accept(this);
-                // if this is the last expression in the list
+                EXP exp = new EXP((ir.expression.Expression)expressions.get(i).accept(this));
+                // if this is the last expression in the list, put exp on the right, otherwise put a new SEQ on the right
                 if (i + 1 >= expressions.size() - 1) {
                     parent.right = exp;
                 } else {
@@ -99,13 +118,14 @@ public class IRTranslator implements ASTVisitor {
                     current = right;
                 }
             }
-            methods.put(newEnvironment, root);
+            stmt = root;
         } else {
-            methods.put(newEnvironment, new EXP((ir.expression.Expression)expressions.get(0).accept(this)));
+            stmt = new EXP((ir.expression.Expression)expressions.get(0).accept(this));
         }
-        parentEnvironment.add(id.value, newEnvironment);
-        // switch back to the old environment, having created the new one
+        // switch context back to the old environment, having created the new one
         currentEnvironment = parentEnvironment;
+        // add to the set of methods
+        methods.put(canonicalLabel(newEnvironment.value), stmt);
         return newEnvironment;
     }
 
@@ -127,7 +147,7 @@ public class IRTranslator implements ASTVisitor {
 
     @Override
     public VAR visit(Identifier identifier) {
-        return new VAR(identifier.value);
+        return new VAR(canonicalLabel(identifier.value));
     }
 
     @Override
@@ -136,7 +156,7 @@ public class IRTranslator implements ASTVisitor {
         // these methods take in an amount of arguments equal to the number of distinct variables from the
         for (Definition d : let.definitions)
             d.accept(this);
-        return null;
+        return let.e.accept(this);
     }
 
     @Override
@@ -159,7 +179,7 @@ public class IRTranslator implements ASTVisitor {
 
     @Override
     public CALL visit(FunctionCall functionCall) throws Exception {
-        return new CALL(functionCall.id.value, visitArgList(functionCall.argValues));
+        return new CALL(canonicalLabel(functionCall.id.value), visitArgList(functionCall.argValues));
     }
 
     @Override

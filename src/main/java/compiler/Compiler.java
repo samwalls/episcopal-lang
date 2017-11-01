@@ -2,7 +2,6 @@ package compiler;
 
 import ast.program.Program;
 import ir.statement.Statement;
-import ir.translation.EnvNode;
 import ir.translation.IRTranslator;
 
 import java.util.Map;
@@ -22,7 +21,7 @@ public class Compiler {
 
     public void run() throws Exception {
         this.translator = new IRTranslator();
-        Map<EnvNode, Statement> methods = translator.visit(program);
+        Map<String, Statement> methods = translator.visit(program);
         // TODO Jasmin assembler generation
     }
 }
