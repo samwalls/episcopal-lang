@@ -32,22 +32,20 @@ public class CompilerTestGenerator {
 
     private static Program test2 = new Program(
             // program test1 = add 3 4
-            new Identifier("test1"), new FunctionCall(new Identifier("callsub"), new ArrayList<>()),
+            new Identifier("test2"), new FunctionCall(new Identifier("callsub"), Arrays.asList(new IntConstant(3))),
             Arrays.asList(
                     // query callsub = ...
-                    new Query(new Identifier("callsub"), new Arguments(), Arrays.asList(
-                            // let x = 42 in...
-                            // (define a function called "x" which returns 42)
-                            new Let(Arrays.asList(new FunctionDefinition(new Identifier("x"), new Arguments(), Arrays.asList(new IntConstant(42)))),
-                            // let f x = 2 * x in...
-                            // (outer function "x" is shadowed by this inner argument "x")
+                    new Query(new Identifier("callsub"), new Arguments(Arrays.asList(new Identifier("x"))), Arrays.asList(
+                            // let f x = x + 2 in...
                             new Let(Arrays.asList(new FunctionDefinition(new Identifier("f"), new Arguments(Arrays.asList(new Identifier("x"))), Arrays.asList(
-                                new MulOp(new IntConstant(2), new Identifier("x"))
+                                new AddOp(new Identifier("x"), new IntConstant(2))
                             ))),
-                            // f x
-                            new FunctionCall(new Identifier("f"), Arrays.asList(new Identifier("x"))))
+                            // f (x + 3)
+                            new FunctionCall(new Identifier("f"), Arrays.asList(
+                                    new AddOp(new Identifier("x"), new IntConstant(3))
+                            )))
                     ))
-            ))
+            )
     );
 
     public static void main(String[] args) throws Exception {
