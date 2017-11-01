@@ -16,41 +16,41 @@ import ast.program.expression.distribution.*;
 public interface ASTVisitor {
 
     // Top level AST constructs
-    void visit(Program program);
-    void visit(Arguments arguments);
-    void visit(Query query);
+    Object visit(Program program) throws Exception;
+    Object visit(Arguments arguments) throws Exception;
+    Object visit(Query query) throws Exception;
 
     // Definition
-    void visit(DistributionDefinition distributionDefinition);
-    void visit(FunctionDefinition functionDefinition);
+    Object visit(DistributionDefinition distributionDefinition) throws Exception;
+    Object visit(FunctionDefinition functionDefinition) throws Exception;
 
     // Expression
-    void visit(Identifier identifier);
-    void visit(Let let);
-    void visit(Observation observation);
-    void visit(Sample sample);
-    void visit(FunctionCall functionCall);
+    Object visit(Identifier identifier) throws Exception;
+    Object visit(Let let) throws Exception;
+    Object visit(Observation observation) throws Exception;
+    Object visit(Sample sample) throws Exception;
+    Object visit(FunctionCall functionCall) throws Exception;
 
     // Expression: Distribution
-    void visit(BernoulliDistribution bernoulliDistribution);
-    void visit(BetaDistribution betaDistribution);
-    void visit(FlipDistribution flipDistribution);
-    void visit(NormalDistribution normalDistribution);
+    Object visit(BernoulliDistribution bernoulliDistribution) throws Exception;
+    Object visit(BetaDistribution betaDistribution) throws Exception;
+    Object visit(FlipDistribution flipDistribution) throws Exception;
+    Object visit(NormalDistribution normalDistribution) throws Exception;
 
     // Expression: Constant
-    void visit(BoolConstant boolConstant);
-    void visit(FloatConstant floatConstant);
-    void visit(IntConstant intConstant);
-    void visit(PercentConstant percentConstant);
+    Object visit(BoolConstant boolConstant) throws Exception;
+    Object visit(FloatConstant floatConstant) throws Exception;
+    Object visit(IntConstant intConstant) throws Exception;
+    Object visit(PercentConstant percentConstant) throws Exception;
 
     // Expression: Binary Operation
-    void visit(AddOp addOp);
-    void visit(SubOp subOp);
-    void visit(MulOp mulOp);
-    void visit(EqualsOp equalsOp);
-    void visit(GreaterThanOp greaterThanOp);
-    void visit(LessThanOp lessThanOp);
-    void visit(AndOp andOp);
-    void visit(OrOp orOp);
-    void visit(OverOp overOp);
+    Object visit(AddOp addOp) throws Exception;
+    Object visit(SubOp subOp) throws Exception;
+    Object visit(MulOp mulOp) throws Exception;
+    Object visit(EqualsOp equalsOp) throws Exception;
+    Object visit(GreaterThanOp greaterThanOp) throws Exception;
+    Object visit(LessThanOp lessThanOp) throws Exception;
+    Object visit(AndOp andOp) throws Exception;
+    Object visit(OrOp orOp) throws Exception;
+    Object visit(OverOp overOp) throws Exception;
 }

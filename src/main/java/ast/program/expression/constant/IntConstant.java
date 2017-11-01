@@ -9,7 +9,7 @@ public class IntConstant extends Constant<Integer> {
     }
 
     @Override
-    public void accept(ASTVisitor v) {
-        v.visit(this);
+    public Object accept(ASTVisitor v) throws Exception {
+        return v.visit(this);
     }
 }

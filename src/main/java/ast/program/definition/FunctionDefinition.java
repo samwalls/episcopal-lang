@@ -14,7 +14,7 @@ public class FunctionDefinition extends Definition {
     }
 
     @Override
-    public void accept(ASTVisitor v) {
-        v.visit(this);
+    public Object accept(ASTVisitor v) throws Exception {
+        return v.visit(this);
     }
 }

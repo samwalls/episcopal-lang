@@ -4,6 +4,7 @@ import ast.ASTHost;
 import ast.ASTVisitor;
 import ast.program.expression.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Arguments implements ASTHost {
@@ -15,11 +16,11 @@ public class Arguments implements ASTHost {
     }
 
     public Arguments() {
-        this(null);
+        this(new ArrayList<>());
     }
 
     @Override
-    public void accept(ASTVisitor v) {
-        v.visit(this);
+    public Object accept(ASTVisitor v) throws Exception {
+        return v.visit(this);
     }
 }

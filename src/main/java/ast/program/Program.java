@@ -5,16 +5,18 @@ import ast.ASTVisitor;
 import ast.program.expression.Expression;
 import ast.program.expression.Identifier;
 
+import java.util.List;
+
 public class Program implements ASTHost {
 
     public Identifier id;
-    public Expression e;
-    public Query whereQuery;
+    public Expression expression;
+    public List<Query> queries;
 
-    public Program(Identifier id, Expression e, Query whereQuery) {
+    public Program(Identifier id, Expression expression, List<Query> queries) {
         this.id = id;
-        this.e = e;
-        this.whereQuery = whereQuery;
+        this.expression = expression;
+        this.queries = queries;
     }
 
     public Program(Identifier id, Expression e) {
@@ -22,7 +24,7 @@ public class Program implements ASTHost {
     }
 
     @Override
-    public void accept(ASTVisitor v) {
-        v.visit(this);
+    public Object accept(ASTVisitor v) throws Exception {
+        return v.visit(this);
     }
 }
