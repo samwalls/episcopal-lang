@@ -23,4 +23,15 @@ public class Arguments implements ASTHost {
     public Object accept(ASTVisitor v) throws Exception {
         return v.visit(this);
     }
+
+    @Override
+    public String toString() {
+        String result = "";
+        if (identifiers.size() > 0) {
+            for (Identifier i : identifiers)
+                result += " " + i.toString();
+            result = result.substring(1);
+        }
+        return result;
+    }
 }

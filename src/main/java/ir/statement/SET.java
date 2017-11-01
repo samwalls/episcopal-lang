@@ -10,4 +10,9 @@ public class SET extends Statement {
         this.location = location;
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return location.toString() + "<- " + value.toString();
+    }
 }

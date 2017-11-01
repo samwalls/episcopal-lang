@@ -19,4 +19,12 @@ public class Let extends Expression {
     public Object accept(ASTVisitor v) throws Exception {
         return v.visit(this);
     }
+
+    @Override
+    public String toString() {
+        String result = "";
+        for (Definition d : definitions)
+            result += " let " + d.toString();
+        return result.substring(1) + " in " + e.toString();
+    }
 }

@@ -9,4 +9,9 @@ public class CONST extends Expression {
         this.value = value;
         this.probability = probability;
     }
+
+    @Override
+    public String toString() {
+        return value + " " + probability * 100 + "%";
+    }
 }

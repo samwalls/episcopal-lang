@@ -9,4 +9,9 @@ public abstract class Constant<T> extends Expression {
     public Constant(T value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }

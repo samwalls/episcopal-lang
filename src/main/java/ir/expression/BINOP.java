@@ -10,4 +10,9 @@ public class BINOP extends Expression {
         this.left = left;
         this.right = right;
     }
+
+    @Override
+    public String toString() {
+        return "BINOP (" + op.name() + "(" + left.toString() + ")" + "(" + right.toString() + "))";
+    }
 }

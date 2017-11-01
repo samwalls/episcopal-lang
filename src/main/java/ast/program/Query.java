@@ -27,4 +27,9 @@ public class Query implements ASTHost {
     public Object accept(ASTVisitor v) throws Exception {
         return v.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "query " + id.toString() + " " + args.toString();
+    }
 }

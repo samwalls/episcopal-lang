@@ -15,4 +15,9 @@ public class Identifier extends Expression {
     public Object accept(ASTVisitor v) throws Exception {
         return v.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }
