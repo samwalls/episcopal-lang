@@ -148,9 +148,12 @@ public class IRTranslator implements ASTVisitor {
     }
 
     @Override
-    public Object visit(Observation observation) {
+    public ESEQ visit(Observation observation) throws Exception {
         // if the observation is not true; need to call builtin function to generate an exception
-        return null;
+        ir.expression.Expression left = (ir.expression.Expression) observation.e1.accept(this);
+        ir.expression.Expression right = (ir.expression.Expression)observation.e2.accept(this);
+        // call builtin_observe on the left argument, then evaluate the right
+        return new ESEQ(new EXP(new CALL(Compiler.BUILTIN_OBSERVE, new ir.Arguments(left))), right);
     }
 
     @Override

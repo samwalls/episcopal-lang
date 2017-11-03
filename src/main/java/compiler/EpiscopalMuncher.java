@@ -24,11 +24,11 @@ public class EpiscopalMuncher {
     public static final int CONSTANT_SIZE = 2;
 
     public static final String BUILTIN_CLASS_PATH = "compiler/helpers/Episcopal";
-    public static final String BUILTIN_LT = "builtin_lt(FF)F";
-    public static final String BUILTIN_GT = "builtin_gt(FF)F";
-    public static final String BUILTIN_EQ = "builtin_eq(FF)F";
-    public static final String BUILTIN_OR = "builtin_or(FF)F";
-    public static final String BUILTIN_AND = "builtin_and(FF)F";
+    public static final String BUILTIN_LT = BUILTIN_CLASS_PATH + "/" + "builtin_lt(FF)F";
+    public static final String BUILTIN_GT = BUILTIN_CLASS_PATH + "/" + "builtin_gt(FF)F";
+    public static final String BUILTIN_EQ = BUILTIN_CLASS_PATH + "/" + "builtin_eq(FF)F";
+    public static final String BUILTIN_OR = BUILTIN_CLASS_PATH + "/" + "builtin_or(FF)F";
+    public static final String BUILTIN_AND = BUILTIN_CLASS_PATH + "/" + "builtin_and(FF)F";
 
     public static final int MAX_LIMIT = 256;
 
@@ -80,7 +80,9 @@ public class EpiscopalMuncher {
     }
 
     private void munchExpression(Expression exp) throws LabelNotFoundException {
-        if (exp instanceof CALL) {
+        if (exp instanceof ESEQ) {
+            munchEseq((ESEQ)exp);
+        } else if (exp instanceof CALL) {
             munchCall((CALL)exp);
         } else if (exp instanceof BINOP) {
             munchBinOp((BINOP)exp);
@@ -89,6 +91,12 @@ public class EpiscopalMuncher {
         } else if (exp instanceof VAR) {
             munchVar((VAR)exp);
         }
+    }
+
+    private void munchEseq(ESEQ eseq) throws LabelNotFoundException {
+        // perform the left expression, evaluate the right
+        munchStatement(eseq.left);
+        munchExpression(eseq.right);
     }
 
     private void munchCall(CALL call) throws LabelNotFoundException {

@@ -7,7 +7,9 @@ import ast.program.definition.FunctionDefinition;
 import ast.program.expression.FunctionCall;
 import ast.program.expression.Identifier;
 import ast.program.expression.Let;
+import ast.program.expression.Observation;
 import ast.program.expression.binop.AddOp;
+import ast.program.expression.binop.EqualsOp;
 import ast.program.expression.constant.FloatConstant;
 import ast.program.expression.constant.IntConstant;
 import ast.program.expression.distribution.FlipDistribution;
@@ -64,6 +66,10 @@ public class CompilerTestGenerator {
 
             new Program(
                     new Identifier("test4"), new FlipDistribution(new FloatConstant(0.5f))
+            ),
+
+            new Program(
+                    new Identifier("test5"), new Observation(new EqualsOp(new IntConstant(1), new IntConstant(2)), new FloatConstant(1f))
             )
     };
 
