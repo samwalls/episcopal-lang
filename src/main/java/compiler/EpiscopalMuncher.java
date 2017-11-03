@@ -183,13 +183,13 @@ public class EpiscopalMuncher {
         int e1p = usedLocals++;
         jasmin.fstore(e1p);
         // op on values
-        jasmin.fload(e2v);
         jasmin.fload(e1v);
+        jasmin.fload(e2v);
         munchOp(binop.op);
         arraySet(arrayLocal, 0);
         // multiply the probabilities
-        jasmin.fload(e2p);
         jasmin.fload(e1p);
+        jasmin.fload(e2p);
         jasmin.fmul();
         arraySet(arrayLocal, 1);
         // leave behind an array value

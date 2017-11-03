@@ -10,6 +10,8 @@ import ast.program.expression.Let;
 import ast.program.expression.Observation;
 import ast.program.expression.binop.AddOp;
 import ast.program.expression.binop.EqualsOp;
+import ast.program.expression.binop.GreaterThanOp;
+import ast.program.expression.binop.LessThanOp;
 import ast.program.expression.constant.FloatConstant;
 import ast.program.expression.constant.IntConstant;
 import ast.program.expression.distribution.FlipDistribution;
@@ -60,16 +62,23 @@ public class CompilerTestGenerator {
             ),
 
             new Program(
-                    // program test4 = 42
+                    // program test3 = 42
                     new Identifier("test3"), new IntConstant(42)
             ),
 
             new Program(
+                    // program test4 = Flip 0.5
                     new Identifier("test4"), new FlipDistribution(new FloatConstant(0.5f))
             ),
 
             new Program(
+                    // program test5 = observe (1 = 2) in 1
                     new Identifier("test5"), new Observation(new EqualsOp(new IntConstant(1), new IntConstant(2)), new FloatConstant(1f))
+            ),
+
+            new Program(
+                    // program test6 = observe (2 > 1) in 1
+                    new Identifier("test6"), new Observation(new GreaterThanOp(new IntConstant(2), new IntConstant(1)), new FloatConstant(1f))
             )
     };
 
