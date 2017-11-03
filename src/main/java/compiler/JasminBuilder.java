@@ -36,9 +36,7 @@ public class JasminBuilder {
         return this;
     }
 
-    public JasminBuilder header(String source, String pack, String clazz) {
-        output.append(".source ").append(source);
-        newline();
+    public JasminBuilder header(String pack, String clazz) {
         if (pack != null) {
             output.append(".class public ").append(pack).append("/").append(clazz);
             newline();
@@ -52,11 +50,22 @@ public class JasminBuilder {
     }
 
     public JasminBuilder methodSignature(String name, List<ArgumentType> inputSignature, ArgumentType outputSignature) {
-        output.append(".method public ").append(name).append("(");
+        String fullyQualifiedName = name + "(";
         for (ArgumentType type : inputSignature)
-            output.append(type.value());
-        output.append(")");
-        output.append(outputSignature.value());
+            fullyQualifiedName += type.value();
+        fullyQualifiedName += ")" + outputSignature.value();
+        output.append(fullyQualifiedName);
+        return this;
+    }
+
+    public JasminBuilder methodHeader(String fullyQualifiedName) {
+        output.append(".method public static ").append(fullyQualifiedName);
+        return newline();
+    }
+
+    public JasminBuilder methodHeader(String name, List<ArgumentType> inputSignature, ArgumentType outputSignature) {
+        output.append(".method public static ");
+        methodSignature(name, inputSignature, outputSignature);
         return newline();
     }
 
@@ -66,7 +75,12 @@ public class JasminBuilder {
     }
 
     public JasminBuilder methodStackLimit(int limit) {
-        output.append(".limit stack ").append(limit);
+        output.append("\t.limit stack ").append(limit);
+        return newline();
+    }
+
+    public JasminBuilder methodLocalsLimit(int limit) {
+        output.append("\t.limit locals ").append(limit);
         return newline();
     }
 
@@ -117,17 +131,120 @@ public class JasminBuilder {
     }
 
     private JasminBuilder localVariableInstruction(String instruction, int var) {
-        output.append("\t").append(instruction).append(var);
+        output.append("\t").append(instruction).append(" ").append(var);
         return newline();
     }
 
-    // TODO bipush, sipush
+    // push
 
-    // TODO iinc
+    public JasminBuilder bipush(int n) {
+        output.append("\tbipush ").append(n);
+        return newline();
+    }
 
-    // TODO branch instructions
+    public JasminBuilder ldc(String c) {
+        output.append("\tldc ").append(c);
+        return newline();
+    }
 
-    // TODO method invocation
+    public JasminBuilder ldc(int c) {
+        output.append("\tldc ").append(c);
+        return newline();
+    }
+
+    public JasminBuilder ldc(float c) {
+        output.append("\tldc ").append(c);
+        return newline();
+    }
+
+    // basic instructions
+
+    public JasminBuilder dup() {
+        return basicInstruction("dup");
+    }
+
+    public JasminBuilder dup2() {
+        return basicInstruction("dup2");
+    }
+
+    public JasminBuilder swap() {
+        return basicInstruction("swap");
+    }
+
+    public JasminBuilder fadd() {
+        return basicInstruction("fadd");
+    }
+
+    public JasminBuilder fsub() {
+        return basicInstruction("fsub");
+    }
+
+    public JasminBuilder fmul() {
+        return basicInstruction("fmul");
+    }
+
+    public JasminBuilder fdiv() {
+        return basicInstruction("fdiv");
+    }
+
+    private JasminBuilder basicInstruction(String name) {
+        output.append("\t").append(name);
+        return newline();
+    }
+
+    // method invocation
+
+    public JasminBuilder invokestatic(String method) {
+        output.append("\tinvokestatic ").append(method);
+        return newline();
+    }
+
+    public JasminBuilder invokestatic(String name, List<ArgumentType> inputSignature, ArgumentType outputSignature) {
+        output.append("\tinvokestatic ");
+        methodSignature(name, inputSignature, outputSignature);
+        return newline();
+    }
+
+    public JasminBuilder methodReturn() {
+        return basicInstruction("return");
+    }
+
+    // arrays
+
+    public JasminBuilder newarray(ArgumentType type, int size) {
+        output.append("\tldc ").append(size);
+        newline();
+        output.append("\tnewarray ");
+        switch (type) {
+            case FLOAT:
+                output.append("float");
+                break;
+            default:
+                throw new IllegalArgumentException("type " + type.name() + " is not valid for newarray");
+        }
+        return newline();
+    }
+
+    public JasminBuilder areturn() {
+        return basicInstruction("areturn");
+    }
+
+    public JasminBuilder faload() {
+        // index
+        // arrayref
+        // ->
+        // value
+        return basicInstruction("faload");
+    }
+
+    public JasminBuilder fastore() {
+        // value
+        // index
+        // arrayref
+        // ->
+        // ...
+        return basicInstruction("fastore");
+    }
 
     @Override
     public String toString() {

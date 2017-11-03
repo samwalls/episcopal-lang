@@ -22,6 +22,7 @@ import ir.expression.*;
 import ir.statement.EXP;
 import ir.statement.SEQ;
 import ir.statement.Statement;
+import compiler.Compiler;
 
 import java.util.*;
 
@@ -29,9 +30,6 @@ import java.util.*;
  * Visits an Episcopal AST, in order to generate an appropriate set of intermediate representation statements.
  */
 public class IRTranslator implements ASTVisitor {
-
-    public static final String BUILTIN_FINISH = "builtin_finish";
-    public static final String MAIN = "episcopal_main";
 
     private EnvNode<String> globalEnvironment;
     private EnvNode<String> currentEnvironment;
@@ -64,7 +62,7 @@ public class IRTranslator implements ASTVisitor {
         methods = new HashMap<>();
         for (Query q : program.queries)
             q.accept(this);
-        mainMethod = new Method(MAIN, globalEnvironment, new EXP(new CALL(BUILTIN_FINISH, new ir.Arguments((ir.expression.Expression)program.expression.accept(this)))));
+        mainMethod = new Method(Compiler.MAIN, globalEnvironment, new EXP(new CALL(Compiler.BUILTIN_FINISH, new ir.Arguments((ir.expression.Expression)program.expression.accept(this)))));
         return methods;
     }
 

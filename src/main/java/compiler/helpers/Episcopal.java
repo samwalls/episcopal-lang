@@ -3,7 +3,8 @@ package compiler.helpers;
 import java.util.Random;
 
 /**
- * Disassemble this class to aid assembler instruction selection for episcopal programs.
+ * This class represents a set of static, built-in functions for use within the episcopal compiler. All episcopal programs
+ * will depend on the class file generated for this.
  */
 public class Episcopal {
 
@@ -25,71 +26,62 @@ public class Episcopal {
         return (float)Math.exp(logGamma(x));
     }
 
-    public static float[] builtin_dist_binomial(float probability) {
+    public static float[] builtin_dist_binomial(float[] probability) {
         return new float[] {
-                new Random().nextFloat() < probability ? 1f : 0f,
-                probability
+                new Random().nextFloat() < probability[0] ? 1f : 0f,
+                probability[0] * probability[1] // multiply the probability value, by the probability with which it takes that value
         };
     }
 
-    public static float[] builtin_dist_normal(float mean, float standardDeviation) {
-        float v = (float)new Random().nextGaussian() * standardDeviation + mean;
-        float variance = (float) Math.pow(standardDeviation, 2);
-        float probability = (float) (Math.exp(-Math.pow((v - mean), 2)/(2f* variance)) / Math.sqrt(2f * Math.PI * variance));
+    public static float[] builtin_dist_normal(float[] mean, float[] standardDeviation) {
+        float v = (float)new Random().nextGaussian() * standardDeviation[0] + mean[0];
+        float variance = (float) Math.pow(standardDeviation[0], 2);
+        float probability = (float) (Math.exp(-Math.pow((v - mean[0]), 2)/(2f* variance)) / Math.sqrt(2f * Math.PI * variance));
         return new float[] {
                 v,
-                probability
+                probability * mean[1] * mean[1] //multiply by the input probabilities
         };
     }
 
-    public static float[] builtin_dist_beta(float a, float b) {
+    public static float[] builtin_dist_beta(float[] a, float[] b) {
         // uniform random between 0 and 1
         float x = new Random().nextFloat();
         // calculate the probability with which this value could occur in the distribution
-        float probability = (float) (gamma(a + b) / (gamma(a) + gamma(b)) * Math.pow(1 - x, b - 1) * Math.pow(x, a - 1));
+        float probability = (float) (gamma(a[0] + b[0]) / (gamma(a[0]) + gamma(b[0])) * Math.pow(1 - x, b[0] - 1) * Math.pow(x, a[0] - 1));
         return new float[] {
                 x,
-                probability
+                probability * a[1] * b[1] // multiply the input probabilities
         };
     }
 
     public static void builtin_observe(float[] a) {
+        // if the value is not "true" i.e. 1
         if (a[0] < 1f)
             throw new RuntimeException("program is takes on invalid value " + a[0] + " with probability " + a[1]);
     }
 
-    // 1 betthefarm = bet365 12 31 where
-    // 2 query bet365 x y =         ; create a function called bet365, which takes x, y
-    // // create a .episcopal_bet365 method in the output class file with two parameters
-    // // i.e.: ABS("bet365", SEQ(...
-    // 3 let d = Beta x y in        ; d is a beta distribution, with alpha = x, and beta = y
-    // // MEM(VAR("d")) <- new Beta(x, y);
-    // 4 let bet = sample d in      ; bet = a sample from the beta distribution
-    // // MEM(VAR("bet")) <- INVOKE("sample")
-    // 5 observe (Flip d) = True in ; if it is not the case that Flip d = true, this function is invalid
-    // 6 bet > 70%                  ; return true or false based on "bet > 70%"
-    // // ... )) end SEQ and ABS
-
-    /*
-     * RUN(
-     *    INIT(
-     *       QUERY("bet365", ARGS(x, y), SEQ(
-     *
-     *       ))
-     *    ),
-     *    SEQ(CALL("bet365", ARGS(12, 31))
-     * )
-     */
-
-    // e.g. something equivalent to the following would be constructed by compiler...
-
-    public static void main(String[] args) {
-        float[] result = bet365(12, 31);
-        System.out.println(result[0]);
-        System.out.println(result[1]);
+    public static float builtin_lt(float a, float b) {
+        return a < b ? 1f : 0f;
     }
 
-    public static float[] bet365(float x, float y) { // .method public episcopal_bet365(FF)F[]
-        return builtin_dist_beta(x, y);
-    } // .end method
+    public static float builtin_gt(float a, float b) {
+        return a > b ? 1f : 0f;
+    }
+
+    public static float builtin_eq(float a, float b) {
+        return a == b ? 1f : 0f;
+    }
+
+    public static float builtin_or(float a, float b) {
+        return a == 1f || b == 1f ? 1f : 0f;
+    }
+
+    public static float builtin_and(float a, float b) {
+        return a == 1f && b == 1f ? 1f : 0f;
+    }
+
+    public static float[] builtin_finish(float[] a) {
+        System.out.println("deducted value " + a[0] + " with probability " + (a[1] * 100) + "%");
+        return a;
+    }
 }
