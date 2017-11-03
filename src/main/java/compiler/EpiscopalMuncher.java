@@ -56,7 +56,7 @@ public class EpiscopalMuncher {
         for (String label : method.environment.keySet()) {
             EnvNode node = method.environment.get(label);
             // put the variable values (array references) onto the stack
-            if (node.value.equals(label) && node.keySet().size() <= 0)
+            if (node.isArg && node.value.equals(label) && node.keySet().size() <= 0)
                 argumentLocals.put(method.environment.canonicalLabel(label), i++);
         }
         usedLocals = argumentLocals.size();

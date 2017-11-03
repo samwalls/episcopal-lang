@@ -72,7 +72,7 @@ public class Compiler {
             EnvNode node = method.environment.get(label);
             // variables in the environment are denoted by a child which links to a value the same as it's key
             // (and where linked node has no children)
-            if (node.value.equals(label) && node.keySet().size() <= 0)
+            if (node.isArg && node.value.equals(label) && node.keySet().size() <= 0)
                 argumentSignature.add(JasminBuilder.ArgumentType.FLOAT_ARRAY);
         }
         JasminBuilder.ArgumentType outputSignature = JasminBuilder.ArgumentType.FLOAT_ARRAY;

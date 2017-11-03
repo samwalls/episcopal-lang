@@ -8,20 +8,22 @@ import ast.program.expression.FunctionCall;
 import ast.program.expression.Identifier;
 import ast.program.expression.Let;
 import ast.program.expression.Observation;
-import ast.program.expression.binop.AddOp;
-import ast.program.expression.binop.EqualsOp;
-import ast.program.expression.binop.GreaterThanOp;
-import ast.program.expression.binop.LessThanOp;
+import ast.program.expression.binop.*;
 import ast.program.expression.constant.FloatConstant;
 import ast.program.expression.constant.IntConstant;
+import ast.program.expression.distribution.BernoulliDistribution;
+import ast.program.expression.distribution.BetaDistribution;
 import ast.program.expression.distribution.FlipDistribution;
+import ast.program.expression.distribution.NormalDistribution;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static sun.misc.PostVMInitHook.run;
 
@@ -79,6 +81,43 @@ public class CompilerTestGenerator {
             new Program(
                     // program test6 = observe (2 > 1) in 1
                     new Identifier("test6"), new Observation(new GreaterThanOp(new IntConstant(2), new IntConstant(1)), new FloatConstant(1f))
+            ),
+
+            new Program(
+                    // program test7 = Beta(0.25 0.3)
+                    new Identifier("test7"), new BetaDistribution(new FloatConstant(0.2f), new FloatConstant(0.6f))
+            ),
+
+            new Program(
+                    // program test8 = Normal(12 1)
+                    new Identifier("test8"), new NormalDistribution(new IntConstant(12), new IntConstant(1))
+            ),
+
+            new Program(
+                    // program test9 = Bernoulli(42)
+                    new Identifier("test9"), new BernoulliDistribution(new IntConstant(42))
+            ),
+
+            new Program(
+                    // program test10 = foo ( 5 ( bar 7 )) where query
+                    new Identifier("test10"), new FunctionCall(new Identifier("foo"), Arrays.asList(new IntConstant(5), new FunctionCall(new Identifier("bar"), Collections.singletonList(new IntConstant(7))))),
+                    Arrays.asList(
+                            // bar x = Normal (0.5, x * 2)
+                            new Query(new Identifier("bar"), new Arguments(Arrays.asList(new Identifier("x"))), Arrays.asList(
+                                    new NormalDistribution(new FloatConstant(0.5f), new MulOp(new Identifier("x"), new IntConstant(2)))
+                            )),
+                            // foo x y =
+                            new Query(new Identifier("foo"), new Arguments(Arrays.asList(new Identifier("x"), new Identifier("y"))), Arrays.asList(
+                                    // let z = Flip (0.9) in
+                                    // (10% of the time this assertion will fail)
+                                    new Let(Arrays.asList(new FunctionDefinition(new Identifier("z"), new Arguments(), Arrays.asList(new FlipDistribution(new FloatConstant(0.9f))))),
+                                    // observe z = 1 in
+                                    new Observation(new EqualsOp(new FunctionCall(new Identifier("z"), Arrays.asList()), new IntConstant(1)),
+                                    // x + y
+                                    new AddOp(new Identifier("x"), new Identifier("y"))
+                                    ))
+                            ))
+                    )
             )
     };
 

@@ -29,7 +29,7 @@ public class Episcopal {
     public static float[] builtin_dist_binomial(float[] probability) {
         return new float[] {
                 new Random().nextFloat() < probability[0] ? 1f : 0f,
-                probability[0] * probability[1] // multiply the probability value, by the probability with which it takes that value
+                Math.min(Math.max(0, probability[0] * probability[1]), 1) // multiply the probability value, by the probability with which it takes that value
         };
     }
 
@@ -39,7 +39,7 @@ public class Episcopal {
         float probability = (float) (Math.exp(-Math.pow((v - mean[0]), 2)/(2f* variance)) / Math.sqrt(2f * Math.PI * variance));
         return new float[] {
                 v,
-                probability * mean[1] * mean[1] //multiply by the input probabilities
+                Math.min(Math.max(0, probability * mean[1] * mean[1]), 1) //multiply by the input probabilities
         };
     }
 
@@ -50,7 +50,7 @@ public class Episcopal {
         float probability = (float) (gamma(a[0] + b[0]) / (gamma(a[0]) + gamma(b[0])) * Math.pow(1 - x, b[0] - 1) * Math.pow(x, a[0] - 1));
         return new float[] {
                 x,
-                probability * a[1] * b[1] // multiply the input probabilities
+                Math.min(Math.max(0, probability * a[1] * b[1]), 1) // multiply the input probabilities
         };
     }
 

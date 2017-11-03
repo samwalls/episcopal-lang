@@ -16,9 +16,16 @@ public class EnvNode<T> {
 
     public T value;
 
-    public EnvNode(T value) {
+    public boolean isArg;
+
+    public EnvNode(T value, boolean isArg) {
         this.value = value;
+        this.isArg = isArg;
         children = new HashMap<>();
+    }
+
+    public EnvNode(T value) {
+        this(value, false);
     }
 
     /**

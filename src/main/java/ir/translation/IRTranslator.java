@@ -70,7 +70,7 @@ public class IRTranslator implements ASTVisitor {
     public Object visit(Arguments arguments) throws Exception {
         arguments.identifiers.forEach(i -> {
             if (!currentEnvironment.contains(i.value))
-                currentEnvironment.add(i.value, new EnvNode<>(i.value));
+                currentEnvironment.add(i.value, new EnvNode<>(i.value, true));
         });
         return null;
     }
