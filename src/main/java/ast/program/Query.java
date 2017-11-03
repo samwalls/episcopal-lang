@@ -5,6 +5,7 @@ import ast.ASTVisitor;
 import ast.program.expression.Expression;
 import ast.program.expression.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Query implements ASTHost {
@@ -20,7 +21,7 @@ public class Query implements ASTHost {
     }
 
     public Query(Identifier id, Arguments args) {
-        this(id, args, null);
+        this(id, args, new ArrayList<>());
     }
 
     @Override

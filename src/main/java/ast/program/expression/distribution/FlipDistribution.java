@@ -4,14 +4,16 @@ import ast.ASTVisitor;
 import ast.program.expression.Expression;
 import ast.program.expression.Identifier;
 
-import java.util.List;
+import java.util.Collections;
 
 public class FlipDistribution extends Distribution {
 
-    public static final String BUILTIN_NAME = "builtin_flip";
+    public static final String BUILTIN_NAME = "builtin_dist_binomial";
 
-    public FlipDistribution(List<Expression> expressions) {
-        super(new Identifier(BUILTIN_NAME), expressions);
+    public static final String BUILTIN_SIGNATURE = BUILTIN_NAME + "([F)[F";
+
+    public FlipDistribution(Expression probability) {
+        super(new Identifier(BUILTIN_NAME), Collections.singletonList(probability));
     }
 
     @Override

@@ -5,6 +5,7 @@ import ast.ASTVisitor;
 import ast.program.expression.Expression;
 import ast.program.expression.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Program implements ASTHost {
@@ -20,7 +21,7 @@ public class Program implements ASTHost {
     }
 
     public Program(Identifier id, Expression e) {
-        this(id, e, null);
+        this(id, e, new ArrayList<>());
     }
 
     @Override
