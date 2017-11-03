@@ -31,60 +31,49 @@ import java.util.*;
 public class IRTranslator implements ASTVisitor {
 
     public static final String BUILTIN_FINISH = "builtin_finish";
+    public static final String MAIN = "episcopal_main";
 
     private EnvNode<String> globalEnvironment;
     private EnvNode<String> currentEnvironment;
 
-    private Map<String, Statement> methods;
+    private Map<String, Method> methods;
 
-    private Statement mainMethod;
+    private Method mainMethod;
 
     //******** ACCESSORS ********//
 
-    public Statement getMainMethod() {
+    public Method getMainMethod() {
         return mainMethod;
     }
 
-    public Map<String, Statement> getMethods() {
+    public Map<String, Method> getMethods() {
         return methods;
     }
 
-    public EnvNode getEnvironment() {
+    public EnvNode<String> getEnvironment() {
         return globalEnvironment;
-    }
-
-    /**
-     * @param localLabel the name of the label relative to its environment
-     * @return a globally unique label for the given label, given the current environment
-     */
-    private String canonicalLabel(String localLabel) {
-        String label = localLabel;
-        for (EnvNode node = currentEnvironment; node != null; node = node.getParent()) {
-            label = node.value.toString() + "_" + label;
-        }
-        return label;
     }
 
     //******** VISITOR DEFINITION ********//
 
     @Override
-    public Map<String, Statement> visit(Program program) throws Exception {
+    public Map<String, Method> visit(Program program) throws Exception {
         globalEnvironment = new EnvNode<>(null);
         globalEnvironment.value = program.id.value;
         currentEnvironment = globalEnvironment;
         methods = new HashMap<>();
         for (Query q : program.queries)
             q.accept(this);
-        mainMethod = new EXP(new CALL(BUILTIN_FINISH, new ir.Arguments((ir.expression.Expression)program.expression.accept(this))));
+        mainMethod = new Method(MAIN, globalEnvironment, new EXP(new CALL(BUILTIN_FINISH, new ir.Arguments((ir.expression.Expression)program.expression.accept(this)))));
         return methods;
     }
 
     @Override
     public Object visit(Arguments arguments) throws Exception {
-        for (Identifier i : arguments.identifiers) {
+        arguments.identifiers.forEach(i -> {
             if (!currentEnvironment.contains(i.value))
                 currentEnvironment.add(i.value, new EnvNode<>(i.value));
-        }
+        });
         return null;
     }
 
@@ -125,7 +114,8 @@ public class IRTranslator implements ASTVisitor {
         // switch context back to the old environment, having created the new one
         currentEnvironment = parentEnvironment;
         // add to the set of methods
-        methods.put(canonicalLabel(newEnvironment.value), stmt);
+        String methodLabel = currentEnvironment.canonicalLabel(newEnvironment.value);
+        methods.put(methodLabel, new Method(methodLabel, newEnvironment, stmt));
         return newEnvironment;
     }
 
@@ -146,8 +136,8 @@ public class IRTranslator implements ASTVisitor {
     }
 
     @Override
-    public VAR visit(Identifier identifier) {
-        return new VAR(canonicalLabel(identifier.value));
+    public VAR visit(Identifier identifier) throws LabelNotFoundException {
+        return new VAR(currentEnvironment.canonicalLabel(identifier.value));
     }
 
     @Override
@@ -179,7 +169,7 @@ public class IRTranslator implements ASTVisitor {
 
     @Override
     public CALL visit(FunctionCall functionCall) throws Exception {
-        return new CALL(canonicalLabel(functionCall.id.value), visitArgList(functionCall.argValues));
+        return new CALL(currentEnvironment.canonicalLabel(functionCall.id.value), visitArgList(functionCall.argValues));
     }
 
     @Override
