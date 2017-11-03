@@ -48,6 +48,24 @@ public class CompilerTestGenerator {
             )
     );
 
+    private static Program test3 = new Program(
+            // program test1 = add 3 4
+            new Identifier("test3"), new FunctionCall(new Identifier("addMultiple"), Arrays.asList()),
+            Arrays.asList(
+                    // query callsub = ...
+                    new Query(new Identifier("addMultiple"), new Arguments(), Arrays.asList(
+                            // let x = 2
+                            new Let(Arrays.asList(new FunctionDefinition(new Identifier("f"), new Arguments(Arrays.asList(new Identifier("x"))), Arrays.asList(
+                                    new AddOp(new Identifier("x"), new IntConstant(2))
+                            ))),
+                            // f (x + 3)
+                            new FunctionCall(new Identifier("f"), Arrays.asList(
+                                    new AddOp(new Identifier("x"), new IntConstant(3))
+                            )))
+                    ))
+            )
+    );
+
     public static void main(String[] args) throws Exception {
         // compile the various test sources defined here
         compiler = new Compiler(test1);
